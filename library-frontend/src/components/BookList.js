@@ -8,10 +8,10 @@ const BookList = ({ refreshTrigger, onAction, currentUser }) => {
     const [simulateLate, setSimulateLate] = useState(false);
     const { showAlert, showConfirm } = useModal(); 
 
-    useEffect(() => {
-        fetchBooks();
-    }, [refreshTrigger]);
-
+   useEffect(() => {
+    fetchBooks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [refreshTrigger]);
     const fetchBooks = async () => {
         try {
             const response = await axios.get('http://localhost:8000/api/books/', {
@@ -118,5 +118,6 @@ const BookList = ({ refreshTrigger, onAction, currentUser }) => {
         </div>
     );
 };
+
 
 export default BookList;
