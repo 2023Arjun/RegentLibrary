@@ -6,16 +6,22 @@ pipeline {
     }
 
     stages {
+        // --- DEBUG STAGE (Optional: Remove later) ---
+        stage('Debug: List Files') {
+            steps {
+                // This prints your folder structure to the logs so we can see where files actually are
+                sh 'ls -R'
+            }
+        }
+
         // --- BACKEND STAGES ---
         stage('Backend: Setup & Install') {
             steps {
-                // REMOVED dir('djangotutorial') wrapper here
-                
                 // Create venv in the root
                 sh 'python3 -m venv venv'
                 
-                // Activate and install (assuming requirements.txt is in the root now)
-                sh '. venv/bin/activate && pip install -r requirements.txt'
+                // Activate and install pointing to the SUBFOLDER file
+                sh '. venv/bin/activate && pip install -r djangotutorial/requirements.txt'
             }
         }
 
@@ -23,10 +29,8 @@ pipeline {
             steps {
                 script {
                     try {
-                        // REMOVED dir('djangotutorial') wrapper here
-                        
-                        // Run manage.py directly from the root
-                        sh '. venv/bin/activate && python manage.py test'
+                        // Run manage.py pointing to the SUBFOLDER file
+                        sh '. venv/bin/activate && python djangotutorial/manage.py test'
                     } catch (err) {
                         echo 'Backend tests failed!'
                         throw err
