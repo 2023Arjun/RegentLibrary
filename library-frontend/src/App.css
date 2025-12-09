@@ -1,0 +1,200 @@
+
+:root {
+--sims-green: #8CC63E;       /* The iconic Plumbob green */
+  --sims-green-hover: #a2d655;
+  --sims-dark-green: #2a6e00;
+  --sims-blue: #0094ff;       /* For UI accents */
+  --sims-bg-gradient: radial-gradient(circle at center, #e6ffe6 0%, #b3ffb3 100%); /* green gradient */
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --radius: 15px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background: var(--sims-bg-gradient);
+  min-height: 100vh;
+  color: #333;
+}
+
+/* --- Layout --- */
+.app-container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-title {
+  text-align: center;
+  color: var(--sims-dark-green);
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* --- Panels (Forms & Lists) --- */
+.sims-panel {
+  background: var(--panel-bg);
+  padding: 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 500px;
+  border-top: 5px solid var(--sims-green);/* Green Accent Bar */
+}
+
+.sims-panel h2 {
+  margin-top: 0;
+  color: #444;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* --- Forms --- */
+.sims-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sims-input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 25px; /* Pill shape inputs */
+  font-size: 14px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.sims-input:focus {
+  border-color: var(--sims-green);
+  box-shadow: 0 0 5px #008000;
+}
+
+/* --- Buttons --- */
+.sims-btn {
+  background-color: var(--sims-green);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px; /* Pill shaped buttons */
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #063606; /* 3D effect */
+  transition: all 0.1s;
+}
+
+.sims-btn:active {
+  box-shadow: 0 2px 0 #008000;
+  transform: translateY(2px);
+}
+
+.sims-btn:hover {
+  background-color: var(--sims-green-hover);
+}
+
+.sims-btn-delete {
+  background-color: #ff4d4d;
+  box-shadow: 0 4px 0 #cc0000;
+  padding: 8px 15px;
+  font-size: 12px;
+}
+
+.sims-btn-delete:hover {
+  background-color: #ff6666;
+}
+
+/* --- List Items --- */
+.sims-list {
+  list-style: none;
+  padding: 0;
+}
+
+.sims-list-item {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.sims-list-item:hover {
+  transform: scale(1.02); /* Slight pop out effect */
+  border-color: var(--sims-green);
+}
+
+.BookList{
+  width: 100%;
+  max-width: 500px;
+  padding-left: 50px;
+}
+
+/* --- Custom Modal / Dialog --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px); /* Blur effect */
+}
+
+.modal-box {
+  background: white;
+  width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  background-color: var(--sims-green); /* Sims Green */
+  padding: 15px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.modal-header.error { background-color: #d9534f; } /* Red for errors */
+.modal-header.info { background-color: #0094ff; }  /* Blue for info */
+
+.modal-content {
+  padding: 25px;
+  text-align: center;
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  background: #f9f9f9;
+}
