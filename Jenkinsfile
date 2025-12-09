@@ -2,14 +2,15 @@ pipeline {
     agent any
 
     environment {
-        CI = 'true' 
+        CI = 'true'
+        // FIX: Add standard Mac paths so Jenkins can find 'npm'
+        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     }
 
     stages {
         stage('Backend: Setup & Install') {
             steps {
                 sh 'python3 -m venv venv'
-                // Requirements are in the subfolder
                 sh '. venv/bin/activate && pip install -r djangotutorial/requirements.txt'
             }
         }
@@ -18,7 +19,6 @@ pipeline {
             steps {
                 script {
                     try {
-                        // manage.py is in the ROOT folder
                         sh '. venv/bin/activate && python manage.py test'
                     } catch (err) {
                         echo 'Backend tests failed!'
@@ -31,6 +31,7 @@ pipeline {
         stage('Frontend: Install Dependencies') {
             steps {
                 dir('library-frontend') {
+                    // Jenkins should now find npm because of the PATH above
                     sh 'npm install'
                 }
             }
