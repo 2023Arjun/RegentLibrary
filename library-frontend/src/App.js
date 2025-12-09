@@ -4,7 +4,7 @@ import BookList from './components/BookList';
 import AddBookForm from './components/AddBookForm';
 import LibrarianDashboard from './components/LibrarianDashboard';
 import AuthPage from './components/AuthPage';
-import { ModalProvider } from './context/ModalContext';
+
 import UserDashboard from './components/UserDashboard'; 
 import './App.css';
 
