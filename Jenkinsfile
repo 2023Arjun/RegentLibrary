@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // This ensures the frontend tests run once and exit, rather than watching for changes
         CI = 'true' 
     }
 
@@ -10,26 +9,27 @@ pipeline {
         // --- BACKEND STAGES ---
         stage('Backend: Setup & Install') {
             steps {
-                dir('djangotutorial') {
-                    // Create a virtual environment to avoid permission issues
-                    sh 'python3 -m venv venv'
-                    // Install dependencies inside the venv
-                    sh '. venv/bin/activate && pip install -r requirements.txt'
-                }
+                // REMOVED dir('djangotutorial') wrapper here
+                
+                // Create venv in the root
+                sh 'python3 -m venv venv'
+                
+                // Activate and install (assuming requirements.txt is in the root now)
+                sh '. venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
         stage('Backend: Run Unit Tests') {
             steps {
-                dir('djangotutorial') {
-                    script {
-                        try {
-                            // Run the Django tests
-                            sh '. venv/bin/activate && python manage.py test'
-                        } catch (err) {
-                            echo 'Backend tests failed!'
-                            throw err
-                        }
+                script {
+                    try {
+                        // REMOVED dir('djangotutorial') wrapper here
+                        
+                        // Run manage.py directly from the root
+                        sh '. venv/bin/activate && python manage.py test'
+                    } catch (err) {
+                        echo 'Backend tests failed!'
+                        throw err
                     }
                 }
             }
@@ -39,7 +39,6 @@ pipeline {
         stage('Frontend: Install Dependencies') {
             steps {
                 dir('library-frontend') {
-                    // Install Node modules
                     sh 'npm install'
                 }
             }
@@ -48,10 +47,7 @@ pipeline {
         stage('Frontend: Build & Test') {
             steps {
                 dir('library-frontend') {
-                    // Run tests (passWithNoTests ensures it doesn't fail if you haven't written JS tests yet)
                     sh 'npm test -- --passWithNoTests'
-                    
-                    // Create the production build
                     sh 'npm run build'
                 }
             }
@@ -60,14 +56,13 @@ pipeline {
 
     post {
         always {
-            // Clean up the workspace after the job finishes to save space
             cleanWs()
         }
         success {
-            echo 'Build and Tests Passed Successfully!'
+            echo 'Build Passed!'
         }
         failure {
-            echo 'Build Failed. Please check the logs.'
+            echo 'Build Failed.'
         }
     }
 }
