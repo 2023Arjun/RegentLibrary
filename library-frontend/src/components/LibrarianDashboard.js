@@ -13,7 +13,7 @@ const LibrarianDashboard = ({ refreshTrigger, onAction }) => {
 
     const fetchTransactions = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/librarian/dashboard/');
+            const response = await axios.get('https://regentlibrary-1.onrender.com/api/librarian/dashboard/');
             setTransactions(response.data);
         } catch (error) {
             console.error("Error fetching transactions", error);
@@ -22,7 +22,7 @@ const LibrarianDashboard = ({ refreshTrigger, onAction }) => {
 
     const handleReturn = async (txnId) => {
         try {
-            const response = await axios.post(`http://localhost:8000/api/return/${txnId}/`);
+            const response = await axios.post(`https://regentlibrary-1.onrender.com/api/return/${txnId}/`);
             const fee = response.data.fee;
             
             if (fee > 0) {
@@ -96,5 +96,6 @@ const LibrarianDashboard = ({ refreshTrigger, onAction }) => {
         </div>
     );
 };
+
 
 export default LibrarianDashboard;
