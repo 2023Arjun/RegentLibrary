@@ -11,7 +11,7 @@ const AuthPage = ({ onLoginSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = isLogin ? 'http://localhost:8000/api/login/' : 'http://localhost:8000/api/register/';
+        const url = isLogin ? 'https://regentlibrary-1.onrender.com/api/login/' : 'https://regentlibrary-1.onrender.com/api/register/';
         
         try {
             const response = await axios.post(url, formData);
@@ -49,4 +49,5 @@ const AuthPage = ({ onLoginSuccess }) => {
         </div>
     );
 };
+
 export default AuthPage;
