@@ -152,7 +152,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://cra.link/deployment",
+    "http://localhost:3000", # Keep local working too
 ]
 
 REST_FRAMEWORK = {
@@ -168,5 +169,6 @@ REST_FRAMEWORK = {
 # 4. Static Files (For Whitenoise)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
