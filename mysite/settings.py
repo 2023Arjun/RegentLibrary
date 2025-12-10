@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 import sys
+import dj_database_url
 
 from pathlib import Path
 
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-4#9#3p2)5e*b0z&4j(z&)jh7n*0^*x6oc+^pak5%1-wahzg)=z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -84,28 +87,28 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Check if we are running tests (this works for local tests too)
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
-if TESTING:
-    # Use SQLite for Tests/Jenkins (Fast, no setup required)
+# 1. First, GET the value from the environment
+# (This was the missing line causing your error)
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+# 2. Now check if it exists
+if DATABASE_URL:
+    # We are in the Cloud -> Use Postgres
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'default': dj_database_url.parse(DATABASE_URL)
     }
 else:
-    
-
+    # We are Local -> Use your existing MySQL
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'librarymanagement',  # e.g., 'djangotestdb'
-        'USER': 'root',        # e.g., 'root'
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',           # Or your MySQL host
-        'PORT': '3306',
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'library_db',
+            'USER': 'root',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',
+            'PORT': '3306',
         }
-}
-
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -149,7 +152,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://regentlibrary-2.onrender.com",
+    "http://localhost:3000" # Keep local working too
 ]
 
 REST_FRAMEWORK = {
@@ -161,4 +165,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+
+# 4. Static Files (For Whitenoise)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+
+
+
+
 

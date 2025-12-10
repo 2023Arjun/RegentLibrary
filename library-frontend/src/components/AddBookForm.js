@@ -13,7 +13,7 @@ const AddBookForm = ({ onBookAdded }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8000/api/books/', formData);         // Send new book data to the API
+            await axios.post('https://regentlibrary-1.onrender.com/api/books/', formData);         // Send new book data to the API
             showAlert("New book added to catalogue.", "Book Added", "success");     // Show success notification via modal
             setFormData({ title: '', author: '', isbn: '' });                       // Clear the form inputs
             onBookAdded();                                                          // Notify parent to refresh book list
@@ -34,4 +34,5 @@ const AddBookForm = ({ onBookAdded }) => {
         </div>
     );
 };
+
 export default AddBookForm;
