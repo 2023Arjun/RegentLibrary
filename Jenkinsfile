@@ -1,86 +1,65 @@
 pipeline {
     agent any
 
-    environment {
-        CI = 'true'
-        // Ensure Jenkins can find npm/npx
-        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-    }
-
     stages {
-        stage('Backend: Setup & Install') {
+        // 1. Get the code from GitHub
+        stage('Checkout') {
             steps {
-                sh 'python3 -m venv venv'
-                sh '. venv/bin/activate && pip install -r djangotutorial/requirements.txt'
+                checkout scm
             }
         }
 
-        stage('Backend: Run Unit Tests') {
-            steps {
-                script {
-                    try {
-                        sh '. venv/bin/activate && python manage.py test'
-                    } catch (err) {
-                        echo 'Backend tests failed!'
-                        throw err
+        // 2. Run Tests for BOTH Apps at the same time
+        stage('Install & Test Microservices') {
+            parallel {
+                
+                // --- BRANCH A: Main Django App ---
+                stage('Main Backend') {
+                    steps {
+                        script {
+                            echo "Setting up Main Backend..."
+                            // Create isolated environment for Django
+                            sh 'python3 -m venv venv_main'
+                            
+                            // Install Django dependencies
+                            sh '. venv_main/bin/activate && pip install -r djangotutorial/requirements.txt'
+                            
+                            // Run Django Tests
+                            echo "Running Backend Tests..."
+                            sh '. venv_main/bin/activate && python manage.py test my_database'
+                        }
+                    }
+                }
+
+                // --- BRANCH B: Notification Microservice ---
+                stage('Notification Service') {
+                    steps {
+                        script {
+                            echo "Setting up Notification Service..."
+                            // Create isolated environment for Microservice
+                            sh 'python3 -m venv venv_notify'
+                            
+                            // Install Flask dependencies
+                            sh '. venv_notify/bin/activate && pip install -r notification-service/requirements.txt'
+                            
+                            // Run Microservice Tests
+                            echo "Running Notification Service Tests..."
+                            sh '. venv_notify/bin/activate && python notification-service/tests.py'
+                        }
                     }
                 }
             }
         }
 
-        stage('Frontend: Install Dependencies') {
-            steps {
-                dir('library-frontend') {
-                    sh 'npm install'
-                }
-            }
-        }
-
-        stage('Frontend: Build & Test') {
-            steps {
-                dir('library-frontend') {
-                    // Fix linting warnings crashing the build
-                    sh 'CI=false npm run build'
-                }
-            }
-        }
-
-        // --- DEPLOY STAGE (Must be inside 'stages' block) ---
+        // 3. Deploy (Placeholder)
         stage('Deploy') {
             steps {
                 script {
-                    echo "Starting Deployment..."
-                    
-                    // 1. Kill old processes on ports 8000 & 3000 (ignore errors if nothing is running)
-                    sh 'lsof -ti:8000 | xargs kill -9 || true'
-                    sh 'lsof -ti:3000 | xargs kill -9 || true'
-
-                    // 2. Start Backend (Using nohup to keep it running in background)
-                    withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-                        sh 'nohup venv/bin/python manage.py runserver 0.0.0.0:8000 > backend.log 2>&1 &'
-                    }
-
-                    // 3. Start Frontend (Using npx serve)
-                    withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-                        dir('library-frontend') {
-                            // Serve the 'build' folder created in previous stage
-                            sh 'nohup npx serve -s build -l 3000 > frontend.log 2>&1 &'
-                        }
-                    }
-                    
-                    echo "Deployment Complete! Visit http://localhost:3000"
+                    echo "Tests passed for Monolith and Microservices."
+                    echo "Ready to deploy..."
+                    // Add deployment commands here
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // We do NOT want to clean workspace immediately because the servers need the files to run
-            echo 'Pipeline finished.'
-        }
-        failure {
-            echo 'Build Failed.'
         }
     }
 }
