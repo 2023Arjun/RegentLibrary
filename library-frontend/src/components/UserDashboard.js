@@ -13,7 +13,7 @@ const UserDashboard = ({ refreshTrigger, onAction }) => {
 
     const fetchMyBooks = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/my-books/');    // Fetch user's borrowed books
+            const response = await axios.get('https://regentlibrary-1.onrender.com/api/my-books/');    // Fetch user's borrowed books
             setTransactions(response.data);
         } catch (error) {
             console.error("Error fetching my books", error);        // Log error to console
@@ -24,7 +24,7 @@ const UserDashboard = ({ refreshTrigger, onAction }) => {
         // Confirmation before returning
         showConfirm(`Are you ready to return "${bookTitle}"?`, async () => {
             try {
-                const response = await axios.post(`http://localhost:8000/api/return/${txnId}/`);
+                const response = await axios.post(`https://regentlibrary-1.onrender.com/api/return/${txnId}/`);
                 const fee = response.data.fee;
                 
                 if (fee > 0) {
@@ -80,5 +80,6 @@ const UserDashboard = ({ refreshTrigger, onAction }) => {
         </div>
     );
 };
+
 
 export default UserDashboard;
