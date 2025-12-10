@@ -14,7 +14,7 @@ const BookList = ({ refreshTrigger, onAction, currentUser }) => {
 }, [refreshTrigger]);
     const fetchBooks = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/books/', {
+            const response = await axios.get('https://regentlibrary-1.onrender.com/api/books/', {
                 params: { search: searchTerm }
             });
             setBooks(response.data);
@@ -33,7 +33,7 @@ const BookList = ({ refreshTrigger, onAction, currentUser }) => {
         // Use custom confirm box
         showConfirm("Are you sure you want to delete this book from the catalogue?", async () => {
             try {
-                await axios.delete(`http://localhost:8000/api/books/${id}/`);  
+                await axios.delete(`https://regentlibrary-1.onrender.com/api/books/${id}/`);  
                 showAlert("Book deleted successfully.", "Deleted", "success");
                 onAction(); 
             } catch (error) {
@@ -44,7 +44,7 @@ const BookList = ({ refreshTrigger, onAction, currentUser }) => {
 
     const handleBorrow = async (id) => {
         try {
-            await axios.post(`http://localhost:8000/api/borrow/${id}/`, {
+            await axios.post(`https://regentlibrary-1.onrender.com/api/borrow/${id}/`, {
                 test_late: simulateLate
             });
             showAlert("Book has been added to your account!", "Borrowed", "success");
@@ -121,3 +121,4 @@ const BookList = ({ refreshTrigger, onAction, currentUser }) => {
 
 
 export default BookList;
+
