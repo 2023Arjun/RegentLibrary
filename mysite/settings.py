@@ -87,20 +87,26 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Check if we are running tests (this works for local tests too)
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
-if TESTING:
-    # Use SQLite for Tests/Jenkins (Fast, no setup required)
-  DATABASE_URL = os.environ.get('DATABASE_URL')
+# 1. First, GET the value from the environment
+# (This was the missing line causing your error)
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
+# 2. Now check if it exists
 if DATABASE_URL:
+    # We are in the Cloud -> Use Postgres
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)
     }
 else:
-    # Your existing MySQL or SQLite config remains here for local use
+    # We are Local -> Use your existing MySQL
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'library_db',
+            'USER': 'root',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',
+            'PORT': '3306',
         }
     }
 
@@ -162,4 +168,5 @@ REST_FRAMEWORK = {
 # 4. Static Files (For Whitenoise)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
