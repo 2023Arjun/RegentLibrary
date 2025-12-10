@@ -153,7 +153,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "https://regentlibrary-2.onrender.com",
-    "http://localhost:3000", # Keep local working too
+    "http://localhost:3000" # Keep local working too
 ]
 
 REST_FRAMEWORK = {
@@ -169,6 +169,7 @@ REST_FRAMEWORK = {
 # 4. Static Files (For Whitenoise)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
